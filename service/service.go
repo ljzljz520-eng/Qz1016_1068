@@ -23,7 +23,10 @@ func New(db *storage.DB) *Service {
 }
 func (s *Service) Register(ctx context.Context, r model.Record) (model.Record, error) {
 	r.Severity = s.Policy.NormalizeSeverity(r.Severity)
-	if err := workflow.ValidateRecord(r, s.Policy); err != nil && r.Status != "" && r.Status != "new" {
+	if r.Status == "" {
+		r.Status = "new"
+	}
+	if err := workflow.ValidateRecord(r, s.Policy); err != nil {
 		return r, err
 	}
 	out, err := s.Reg.Submit(ctx, r)

@@ -20,7 +20,9 @@ func (r *Registration) Submit(ctx context.Context, rec model.Record) (model.Reco
 	if rec.Severity < 1 {
 		rec.Severity = 1
 	}
-	rec.Status = "new"
+	if rec.Status == "" {
+		rec.Status = "new"
+	}
 	if err := r.db.PutRecord(rec); err != nil {
 		return rec, err
 	}
